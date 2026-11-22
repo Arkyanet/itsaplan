@@ -44,3 +44,10 @@ coverage
 
 # agent scratch space (test docs, drafts)
 .workspace/
+
+# Arkya deployment secrets
+arkya/.bucket-key.json
+arkya/.db-conn.json
+arkya/production.env.json
+arkya/.linear-key
+arkya/.plan-key

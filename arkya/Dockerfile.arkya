@@ -1,0 +1,25 @@
+# It's a Plan on Arkya: one ACS container running api + worker + web behind
+# arkya/supervisor.ts on $PORT, which serves the api under /api so web and api share one
+# origin (and the session cookie). api and worker are the official release images; the
+# web image is the Arkya build of this branch (WEB_IMAGE, built by the arkya-deploy workflow
+# from apps/web/Dockerfile), or the official one when built without it.
+ARG VERSION=1.12.0
+ARG WEB_IMAGE=ghcr.io/croffasia/itsaplan-web:${VERSION}
+FROM ${WEB_IMAGE} AS web
+FROM ghcr.io/croffasia/itsaplan-worker:${VERSION} AS worker
+
+# The api image is the base: Alpine with bun, the repository in /app and pg_dump 18
+# for the backup migrate.ts takes before it applies migrations.
+FROM ghcr.io/croffasia/itsaplan-api:${VERSION}
+RUN apk upgrade --no-cache && apk add --no-cache nodejs
+COPY --from=web /app /web
+COPY --from=worker /app /worker
+COPY --chmod=755 arkya/supervisor.ts /arkya/supervisor.ts
+# Read-only root filesystem: Next's cache goes to /tmp.
+RUN mkdir -p /web/apps/web/.next && rm -rf /web/apps/web/.next/cache \
+ && ln -s /tmp/next-cache /web/apps/web/.next/cache
+ENV HOME=/home/container \
+    XDG_CACHE_HOME=/tmp/.cache \
+    NEXT_TELEMETRY_DISABLED=1
+EXPOSE 8080
+CMD ["bun", "run", "/arkya/supervisor.ts"]

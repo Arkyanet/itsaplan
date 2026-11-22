@@ -1,0 +1,70 @@
+# Builds the Arkya image of It's a Plan (this branch's web + the official api and worker)
+# and puts it in service on the Arkya app `itsaplan` (https://plan.arkya.gg).
+# Secret: ARKYA_TOKEN, an Arkya API token. The registry credentials are read with it.
+name: Arkya deploy
+
+on:
+  push:
+    branches: [arkya]
+  workflow_dispatch:
+
+concurrency:
+  group: arkya-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  ARKYA_API: https://api.arkya.gg/api
+  ARKYA_APP: itsaplan
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Log in to the Arkya registry
+        env:
+          ARKYA_TOKEN: ${{ secrets.ARKYA_TOKEN }}
+        run: |
+          creds=$(curl -sf -H "Authorization: Bearer $ARKYA_TOKEN" "$ARKYA_API/registry/credentials")
+          secret=$(jq -r .secret <<<"$creds")
+          echo "::add-mask::$secret"
+          echo "$secret" | docker login "$(jq -r .host <<<"$creds")" -u "$(jq -r .username <<<"$creds")" --password-stdin
+          echo "IMAGE=$(jq -r .host <<<"$creds")/$(jq -r .project <<<"$creds")/$ARKYA_APP" >> "$GITHUB_ENV"
+          echo "TAG=arkya-${GITHUB_SHA::12}" >> "$GITHUB_ENV"
+
+      - name: Build the web image
+        run: docker build -f apps/web/Dockerfile -t itsaplan-web:arkya .
+
+      - name: Build and push the Arkya image
+        run: |
+          docker build -f arkya/Dockerfile.arkya --build-arg WEB_IMAGE=itsaplan-web:arkya -t "$IMAGE:$TAG" .
+          docker push "$IMAGE:$TAG"
+          echo "DIGEST=$(docker inspect --format '{{index .RepoDigests 0}}' "$IMAGE:$TAG" | cut -d@ -f2)" >> "$GITHUB_ENV"
+
+      - name: Register the release and put it in service
+        env:
+          ARKYA_TOKEN: ${{ secrets.ARKYA_TOKEN }}
+        run: |
+          api() { curl -sf -H "Authorization: Bearer $ARKYA_TOKEN" -H 'Content-Type: application/json' "$@"; }
+          api -X POST "$ARKYA_API/apps/$ARKYA_APP/releases" -d "{\"tag\":\"$TAG\",\"digest\":\"$DIGEST\"}" > /dev/null
+          for _ in $(seq 1 30); do
+            scan=$(api "$ARKYA_API/apps/$ARKYA_APP/releases/$TAG/scan" | jq -r '.status // .verdict // empty')
+            echo "scan: $scan"
+            case "$scan" in PASSED|WARNED) break ;; BLOCKED|FAILED) exit 1 ;; esac
+            sleep 10
+          done
+          api -m 300 -X POST "$ARKYA_API/apps/$ARKYA_APP/deploy" -d "{\"tag\":\"$TAG\"}"
+
+      - name: Check the instance answers
+        run: |
+          for _ in $(seq 1 20); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' https://plan.arkya.gg/login)
+            [ "$code" = 200 ] && echo "plan.arkya.gg/login: 200" && exit 0
+            sleep 10
+          done
+          echo "plan.arkya.gg/login answered $code" && exit 1

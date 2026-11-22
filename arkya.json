@@ -1,0 +1,23 @@
+{
+  "app": "itsaplan",
+  "dockerfile": "arkya/Dockerfile.arkya",
+  "context": ".",
+  "node": "Ryzen 1",
+  "project": "Arkya Networks",
+  "env": {},
+  "size": {
+    "cpu": 1,
+    "ram": 2
+  },
+  "services": {
+    "db": {
+      "type": "postgres",
+      "name": "itsaplan-db",
+      "size": {
+        "cpu": 1,
+        "ram": 1,
+        "disk": 10
+      }
+    }
+  }
+}
