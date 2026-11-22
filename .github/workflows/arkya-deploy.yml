@@ -62,8 +62,9 @@ jobs:
 
       - name: Check the instance answers
         run: |
-          for _ in $(seq 1 20); do
-            code=$(curl -s -o /dev/null -w '%{http_code}' https://plan.arkya.gg/login)
+          # The edge can answer with a TLS error for a moment while the new version starts.
+          for _ in $(seq 1 30); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' https://plan.arkya.gg/login || true)
             [ "$code" = 200 ] && echo "plan.arkya.gg/login: 200" && exit 0
             sleep 10
           done
