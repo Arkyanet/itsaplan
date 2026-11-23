@@ -4,11 +4,11 @@ import { toast } from 'sonner';
 import type { FeedItem } from '@/lib/api/endpoints/activity';
 import Avatar from '@/components/common/Avatar';
 import ConfirmDialog from '@/components/common/overlay/ConfirmDialog';
-import MarkdownEditor from '@/components/common/editor/MarkdownEditor';
 import { Button } from '@/components/ui/button';
 import { useRelativeTime } from '@/context/relativeTimeContext';
 import { readCommentDraft } from '@/utils/commentDrafts';
 import { commentPath } from '@/utils/paths';
+import CommentBody from './CommentBody';
 import CommentComposer, { type ComposerContext } from './CommentComposer';
 import CommentReactionPicker from './CommentReactionPicker';
 import CommentReactions from './CommentReactions';
@@ -168,13 +168,7 @@ export default function CommentItem({
         </div>
       ) : (
         <div className="mt-1.5">
-          <MarkdownEditor
-            // The editor reads its content once, at mount: an edit has to remount it.
-            key={item.body ?? ''}
-            className="text-sm text-foreground/90 [&_a.issue-ref]:mx-1 [&_a.issue-ref]:text-[0.9em]"
-            defaultValue={item.body ?? ''}
-            editable={false}
-          />
+          <CommentBody item={item} composer={composer} />
         </div>
       )}
       <CommentReactions reactions={reactions} viewerId={viewer?.id} onToggle={toggle} />
