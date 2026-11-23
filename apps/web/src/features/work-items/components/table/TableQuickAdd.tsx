@@ -18,7 +18,7 @@ export function TableQuickAdd({
   const t = useTranslations('workItems');
   const { ref, triggerProps } = useIconHover();
   const [open, setOpen] = useState(false);
-  const rowFrame = cn('border-b pe-4', indented ? 'ps-9' : 'ps-4');
+  const rowFrame = cn('pe-4', indented ? 'ps-9' : 'ps-4');
 
   if (open) {
     return (
@@ -37,7 +37,7 @@ export function TableQuickAdd({
       {...triggerProps}
       onClick={() => setOpen(true)}
       className={cn(
-        'flex w-full items-center gap-1.5 py-1.5 text-xs text-muted-foreground/60 transition-colors hover:bg-accent/20 hover:text-foreground',
+        'flex h-8 w-full items-center gap-1.5 text-xs text-muted-foreground/60 transition-colors hover:bg-accent/60 hover:text-foreground',
         rowFrame,
       )}
     >

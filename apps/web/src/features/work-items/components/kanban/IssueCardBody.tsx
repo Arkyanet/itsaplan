@@ -52,7 +52,9 @@ export function IssueCardBody({
   const initiative = issue.initiative ?? undefined;
   const cycle = issue.cycle ?? undefined;
   const column = maps.columnById.get(issue.columnId);
+  const avatarsShown = (has('assignee') && assignee) || (has('delegate') && delegate);
   const metaShown =
+    (has('priority') && issue.priority) ||
     has('statusAge') ||
     (has('dueDate') && issue.dueDate) ||
     (has('startDate') && issue.startDate) ||
@@ -62,30 +64,48 @@ export function IssueCardBody({
     (has('estimatePoints') && issue.estimatePoints != null) ||
     (has('estimateTime') && issue.estimateMinutes != null) ||
     (has('labels') && issue.labelIds.length > 0);
-  const footerShown =
-    has('created') ||
-    has('updated') ||
-    (has('assignee') && assignee) ||
-    (has('delegate') && delegate);
+  const datesShown = has('created') || has('updated');
 
   return (
     <>
-      {(has('id') || (has('priority') && issue.priority)) && (
+      {(has('id') || avatarsShown) && (
         <div
-          className={cn('mb-2 flex items-center', has('id') ? 'justify-between' : 'justify-end')}
+          className={cn(
+            'mb-1.5 flex min-h-[18px] items-center',
+            has('id') ? 'justify-between' : 'justify-end',
+          )}
         >
           {has('id') && (
             <IssueIdentifier
               issue={issue}
-              className="text-xs text-muted-foreground"
+              className="text-xs text-muted-foreground tabular-nums"
               onOpenAncestor={onOpen}
             />
           )}
-          {has('priority') && issue.priority && <PriorityBadge priority={issue.priority} />}
+          {/* Negative spacing so a delegate and an assignee shown together
+              overlap; the ring in the card color keeps them separated. */}
+          {avatarsShown && (
+            <div className="flex items-center -space-x-1.5">
+              {has('delegate') && delegate && (
+                <DelegateAvatar
+                  name={delegate.name}
+                  image={delegate.image}
+                  className="size-4.5 text-[8px] ring-2 ring-[var(--kanban-card)]"
+                />
+              )}
+              {has('assignee') && assignee && (
+                <AssigneeAvatar
+                  name={assignee.name}
+                  image={assignee.image}
+                  className="size-4.5 text-[8px] ring-2 ring-[var(--kanban-card)]"
+                />
+              )}
+            </div>
+          )}
         </div>
       )}
 
-      <div className="mb-2 flex items-start gap-2">
+      <div className="flex items-start gap-2">
         {has('status') && column && (
           <Tooltip>
             <TooltipTrigger asChild>
@@ -96,13 +116,21 @@ export function IssueCardBody({
             <TooltipContent>{column.name}</TooltipContent>
           </Tooltip>
         )}
-        <span dir="auto" className="line-clamp-2 text-sm leading-snug text-foreground">
+        <span
+          dir="auto"
+          className="line-clamp-2 text-[13px] leading-snug font-medium text-foreground"
+        >
           {issue.title}
         </span>
       </div>
 
       {metaShown && (
-        <div className="flex min-h-[22px] flex-wrap items-center gap-1">
+        <div className="mt-2 flex flex-wrap items-center gap-1">
+          {has('priority') && issue.priority && (
+            <span className="inline-flex min-h-5 items-center self-stretch rounded-md border border-border px-1">
+              <PriorityBadge priority={issue.priority} className="size-3" />
+            </span>
+          )}
           {has('statusAge') && (
             <Tooltip>
               <TooltipTrigger asChild>
@@ -173,31 +201,11 @@ export function IssueCardBody({
         </div>
       )}
 
-      {footerShown && (
-        <div className="mt-2 flex items-center justify-between gap-2">
-          <span className="text-[11px] text-muted-foreground/70">
-            {has('created') && t('createdOn', { date: formatShortDate(issue.createdAt) })}
-            {has('created') && has('updated') && ' · '}
-            {has('updated') && t('updatedOn', { date: formatShortDate(issue.updatedAt) })}
-          </span>
-          {/* Negative spacing so a delegate and an assignee shown together
-              overlap; the ring in the card color keeps them separated. */}
-          <div className="flex items-center -space-x-1.5">
-            {has('delegate') && delegate && (
-              <DelegateAvatar
-                name={delegate.name}
-                image={delegate.image}
-                className="ring-2 ring-[var(--kanban-card)]"
-              />
-            )}
-            {has('assignee') && assignee && (
-              <AssigneeAvatar
-                name={assignee.name}
-                image={assignee.image}
-                className="ring-2 ring-[var(--kanban-card)]"
-              />
-            )}
-          </div>
+      {datesShown && (
+        <div className="mt-2 text-[11px] text-muted-foreground/70">
+          {has('created') && t('createdOn', { date: formatShortDate(issue.createdAt) })}
+          {has('created') && has('updated') && ' · '}
+          {has('updated') && t('updatedOn', { date: formatShortDate(issue.updatedAt) })}
         </div>
       )}
 

@@ -82,7 +82,15 @@ export function TableBuiltinCell({
         issue.assigneeUserId != null ? maps.assigneeById.get(issue.assigneeUserId) : undefined;
       return (
         <div className="flex">
-          {assignee ? <AssigneeAvatar name={assignee.name} image={assignee.image} /> : DASH}
+          {assignee ? (
+            <AssigneeAvatar
+              name={assignee.name}
+              image={assignee.image}
+              className="size-4.5 text-[8px]"
+            />
+          ) : (
+            DASH
+          )}
         </div>
       );
     }
@@ -91,7 +99,15 @@ export function TableBuiltinCell({
         issue.delegateUserId != null ? maps.assigneeById.get(issue.delegateUserId) : undefined;
       return (
         <div className="flex">
-          {delegate ? <DelegateAvatar name={delegate.name} image={delegate.image} /> : DASH}
+          {delegate ? (
+            <DelegateAvatar
+              name={delegate.name}
+              image={delegate.image}
+              className="size-4.5 text-[8px]"
+            />
+          ) : (
+            DASH
+          )}
         </div>
       );
     }

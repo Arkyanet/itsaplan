@@ -188,7 +188,7 @@ export default function SwimlaneBoard({
             {columns.map((column) => (
               <div
                 key={column.key}
-                className="group/column flex items-center gap-2 text-sm font-medium text-foreground"
+                className="group/column flex items-center gap-2 text-[13px] font-medium text-foreground"
                 style={{ width: COLUMN_WIDTH }}
               >
                 <GroupDot group={column} />

@@ -139,10 +139,10 @@ export const BoardColumn = memo(function BoardColumn({
       style={{ width: COLUMN_WIDTH }}
     >
       <div
-        className="mb-2 flex items-center justify-between ps-1"
+        className="mb-1 flex h-8 items-center justify-between ps-1.5"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+        <div className="flex min-w-0 items-center gap-2 text-[13px] font-medium text-foreground">
           <GroupDot group={group} />
           {group.name}
           <WipCount filteredCount={issues.length} wip={wip} filtered={filtered} />

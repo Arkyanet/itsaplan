@@ -25,7 +25,7 @@ export function SwimlaneHeader({
         e.stopPropagation();
         onToggle();
       }}
-      className="flex w-full items-center gap-2 bg-muted/30 px-4 py-1.5 text-sm font-medium text-foreground"
+      className="flex h-9 w-full items-center gap-2 bg-muted/60 px-4 text-[13px] font-medium text-foreground"
     >
       <Chevron ref={ref} size={14} className="text-muted-foreground" />
       <GroupDot group={swimlane} />

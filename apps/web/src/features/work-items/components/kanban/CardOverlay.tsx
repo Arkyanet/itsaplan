@@ -42,7 +42,7 @@ export function CardOverlay({
               style={{ transform: `translate(${depth * 6}px, ${depth * 6}px)` }}
             />
           ))}
-          <div className="kanban-card relative rounded-md p-3 shadow-lg">
+          <div className="kanban-card relative rounded-md border border-input px-3 py-2.5 shadow-lg">
             <IssueCardBody issue={issue} maps={maps} properties={properties} />
             {count > 1 && (
               <Badge className="absolute -end-2 -top-2 rounded-full shadow">{count}</Badge>

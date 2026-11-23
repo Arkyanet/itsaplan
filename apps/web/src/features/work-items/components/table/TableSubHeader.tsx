@@ -28,7 +28,7 @@ export function TableSubHeader({
     <TableDropZone
       id={dropId}
       onDrop={onDrop}
-      className="flex items-center bg-muted/20 py-1 ps-9 pe-4"
+      className="flex h-8 items-center bg-muted/30 ps-9 pe-4"
     >
       <button
         type="button"

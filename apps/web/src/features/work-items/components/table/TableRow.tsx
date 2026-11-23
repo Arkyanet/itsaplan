@@ -11,13 +11,13 @@ import IssueContextMenu from '@/features/issue/components/actions/IssueContextMe
 import { DropLine } from '../shared/DropLine';
 import { EditableBuiltinCell } from '../shared/EditableBuiltinCell';
 import { EditableCustomCell } from '../shared/EditableCustomCell';
-import { IssueIdentifier } from '../shared/IssueIdentifier';
 import { SubtaskProgress } from '../shared/SubtaskProgress';
 import { useIsBlocked } from '../../context/useIssueLinks';
 import { useSubtaskFold } from '../../context/useSubtasks';
 import { DRAGGABLE_FOCUS } from '../../utils/dnd';
 import { columnKey, type OrderedColumn } from '../../utils/table';
 import { TableBuiltinCell } from './TableBuiltinCell';
+import { TableRowLead } from './TableRowLead';
 import { TableRowLinks } from './TableRowLinks';
 import { TableRowSubtasks } from './TableRowSubtasks';
 
@@ -30,6 +30,9 @@ export function TableRow({
   orderedColumns,
   maps,
   showId,
+  showPriority,
+  showStatus,
+  idWidth,
   indented,
   alignTop,
   gridTemplate,
@@ -44,6 +47,10 @@ export function TableRow({
   orderedColumns: OrderedColumn[];
   maps: Maps;
   showId: boolean;
+  // Priority and status render as icons before the title.
+  showPriority: boolean;
+  showStatus: boolean;
+  idWidth: number;
   // Rows under a sub-section are indented to sit below their sub-header.
   indented: boolean;
   // Top-align cells (a tall markdown cell is present) instead of centering.
@@ -104,9 +111,10 @@ export function TableRow({
           onClick();
         }}
         className={cn(
-          'relative grid cursor-grab gap-3 border-b py-2 pe-4 text-sm transition-colors',
+          'relative grid min-h-9 cursor-grab gap-3 py-1 pe-4 text-[13px] transition-colors',
           DRAGGABLE_FOCUS,
-          blocked ? 'row-blocked' : 'hover:bg-accent/40',
+          'focus-visible:bg-brand-soft',
+          blocked ? 'row-blocked' : 'hover:bg-accent/60',
           alignTop ? 'items-start' : 'items-center',
           indented ? 'ps-9' : 'ps-4',
           isDragging && 'opacity-40',
@@ -114,14 +122,19 @@ export function TableRow({
         style={{ gridTemplateColumns: gridTemplate }}
       >
         {showDropLine && <DropLine className="top-0" />}
-        <div className="flex min-w-0 items-center gap-2">
-          {showId && (
-            <IssueIdentifier
-              issue={issue}
-              className="text-xs text-muted-foreground tabular-nums"
-              onOpenAncestor={onOpenIssue}
-            />
-          )}
+        <div className="flex min-h-7 min-w-0 items-center gap-2">
+          <TableRowLead
+            issue={issue}
+            project={project}
+            maps={maps}
+            showPriority={showPriority}
+            showId={showId}
+            showStatus={showStatus}
+            idWidth={idWidth}
+            readOnly={readOnly}
+            onPatch={patch}
+            onOpenIssue={onOpenIssue}
+          />
           <span dir="auto" className="truncate text-foreground">
             {issue.title}
           </span>
