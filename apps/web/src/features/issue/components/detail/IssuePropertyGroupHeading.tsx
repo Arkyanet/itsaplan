@@ -20,14 +20,13 @@ export default function IssuePropertyGroupHeading({
     <button
       type="button"
       className={cn(
-        'col-span-2 flex items-center gap-1.5 text-muted-foreground/70 hover:text-foreground',
+        'group/heading col-span-2 flex h-6 items-center gap-1 justify-self-start rounded-md text-xs font-medium text-muted-foreground hover:text-foreground',
         className,
       )}
       onClick={onToggle}
     >
-      <span className="h-px flex-1 bg-border/60" />
-      <span className="text-[10px] font-semibold tracking-wide uppercase">{label}</span>
-      <Chevron className="size-3" />
+      {label}
+      <Chevron className="size-3 opacity-60 group-hover/heading:opacity-100" />
     </button>
   );
 }

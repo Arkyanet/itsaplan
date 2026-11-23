@@ -44,7 +44,7 @@ export default function ActivityItemList({
   }
 
   return (
-    <ul className="relative flex flex-col gap-1 before:absolute before:inset-y-3 before:start-3 before:w-px before:bg-border">
+    <ul className="relative flex flex-col gap-1 before:absolute before:inset-y-3 before:start-[9px] before:w-px before:bg-border">
       {rows.map((row) =>
         'comment' in row ? (
           <CommentThread

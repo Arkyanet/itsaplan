@@ -1,6 +1,7 @@
 import { useTranslations } from 'next-intl';
 import type { Column } from '@/lib/api/endpoints/columns';
 import { useSession } from '@/lib/auth-client';
+import { cn } from '@/lib/utils';
 import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { type ActivityFeedView, type ActivityTab } from '../../hooks/useActivityFeedView';
 import { useCommentAnchor } from '../../hooks/useCommentAnchor';
@@ -52,6 +53,12 @@ export default function IssueActivityFeed({
     authorImage: (user as { image?: string | null } | null)?.image ?? null,
   };
   const emptyText = tIssue(EMPTY_TEXT[view.tab]);
+  // The box sits where new comments appear: under the feed when it reads oldest
+  // first, above it otherwise.
+  const composerAtEnd = view.ready && view.order === 'asc';
+  // Keyed, so a post that ends after the panel moved to another issue cannot clear
+  // that issue's box.
+  const composerBox = <CommentComposer key={issueId} {...composer} />;
 
   let content;
   if (view.tab === 'agentRuns') {
@@ -80,20 +87,18 @@ export default function IssueActivityFeed({
   }
 
   return (
-    <div className="mt-6 border-t pt-5">
-      <h3 className="mb-4 text-xs font-medium tracking-wide text-muted-foreground uppercase">
+    <div className="mt-8 border-t pt-5">
+      <h3 className="mb-4 text-[13px] font-medium text-muted-foreground">
         {tIssue('activityHeading')}
       </h3>
 
-      {/* Keyed, so a post that ends after the panel moved to another issue cannot clear
-          that issue's box. */}
-      <CommentComposer key={issueId} {...composer} />
+      {!composerAtEnd && composerBox}
 
       {view.ready && (
         <Tabs
           value={view.tab}
           onValueChange={(value) => view.setTab(value as ActivityTab)}
-          className="mt-5 gap-3"
+          className={cn('gap-3', !composerAtEnd && 'mt-5')}
         >
           <IssueActivityToolbar issueId={issueId} view={view} canReadAgentRuns={canReadAgentRuns} />
           <TabsContent value={view.tab}>
@@ -107,6 +112,8 @@ export default function IssueActivityFeed({
           </TabsContent>
         </Tabs>
       )}
+
+      {composerAtEnd && <div className="mt-5">{composerBox}</div>}
     </div>
   );
 }

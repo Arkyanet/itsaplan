@@ -28,6 +28,7 @@ import IssueWatchers from './IssueWatchers';
 import IssueSectionHeading from './IssueSectionHeading';
 import IssuePropertyRow from './IssuePropertyRow';
 import IssuePropertyGroupHeading from './IssuePropertyGroupHeading';
+import IssueLabelChips from '../fields/IssueLabelChips';
 import { type Embeddable } from '@/components/common/editor/attachmentEmbed';
 import { parseDate } from '@/utils/dates';
 import { cn } from '@/lib/utils';
@@ -86,6 +87,7 @@ export default function IssueProperties({
   // start. Equal dates are allowed.
   const latestStart = parseDate(issue.dueDate);
   const earliestDue = parseDate(issue.startDate);
+  const selectedLabels = project.labels.filter((label) => issue.labelIds.includes(label.id));
   const groups: {
     key: 'groupState' | 'groupPeople' | 'groupPlanning' | 'groupLabels' | 'groupCustom';
     rows: ReactNode[];
@@ -272,6 +274,9 @@ export default function IssueProperties({
               value={issue.labelIds}
               onToggle={onToggleLabel}
               readOnly={readOnly}
+              trigger={
+                selectedLabels.length > 0 ? <IssueLabelChips labels={selectedLabels} /> : undefined
+              }
             />
           </IssuePropertyRow>
         ),
@@ -333,16 +338,15 @@ export default function IssueProperties({
       />
       {open && (
         // The name column takes a share of whatever room the section has, capped at
-        // the width long names need, so a narrow sidebar leaves the controls enough
-        // space instead of pushing them out of it.
-        <div className="grid grid-cols-[minmax(0,min(40%,180px))_minmax(0,1fr)] items-start gap-x-2 gap-y-2.5">
+        // a short width; a longer name is cut and shown whole on hover.
+        <div className="grid grid-cols-[minmax(0,min(40%,6rem))_minmax(0,1fr)] items-start gap-x-2 gap-y-1 [&_[data-slot=pill]]:rounded-md [&_[data-slot=pill]]:border-transparent [&_[data-slot=pill]]:px-2 [&_[data-slot=pill]]:text-[13px]">
           {visibleGroups.map((group, i) => {
             const groupOpen = groupsOpen.isOpen(group.key);
             return (
               <Fragment key={group.key}>
                 <IssuePropertyGroupHeading
                   label={t(group.key)}
-                  className={cn(i > 0 && 'mt-2')}
+                  className={cn(i > 0 && 'mt-3')}
                   open={groupOpen}
                   onToggle={() => groupsOpen.toggle(group.key)}
                 />

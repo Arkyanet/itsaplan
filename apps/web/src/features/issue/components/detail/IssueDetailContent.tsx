@@ -31,6 +31,7 @@ import {
   PROPERTIES_W,
   propertiesWidthKey,
 } from '../../utils/propertiesWidth';
+import { cn } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 
 // The body of a issue — title, description, markdown custom fields, the
@@ -54,10 +55,10 @@ export default function IssueDetailContent({
   // now-gone issue (close the panel / return to the project).
   onDeleted?: () => void;
   // 'panel' stacks everything in one column (side panel). 'page' puts the
-  // Properties in a right sidebar fixed to the viewport edge (Linear full-page
-  // layout), and stacks them into the column below xl. 'split' is the same
-  // two-column shape but in normal flow (no fixed positioning), so it fits
-  // inside a narrower container like the inbox pane.
+  // Properties in a full-height panel along the end edge of the page (Linear
+  // full-page layout), and stacks them into the column below xl. 'split' is the same
+  // two-column shape but in normal flow, so it fits inside a narrower container
+  // like the inbox pane.
   layout?: 'panel' | 'page' | 'split';
   // The comment to bring into view: the one a link or a notification points at.
   commentId?: number | null;
@@ -111,13 +112,14 @@ export default function IssueDetailContent({
   };
   const feedRef = useRef<HTMLDivElement>(null);
 
-  if (!issue) return <IssueDetailSkeleton />;
+  if (!issue) return <IssueDetailSkeleton layout={layout === 'page' ? 'page' : undefined} />;
 
+  const titleSize = layout === 'panel' ? 'text-xl leading-snug' : 'text-2xl leading-tight';
   const heading = (
     <>
       <div className="flex items-start gap-2">
         {issue.archivedAt && (
-          <span className="mt-1 shrink-0 rounded border border-border px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground uppercase">
+          <span className="mt-1.5 shrink-0 rounded border border-border px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground uppercase">
             {t('archived')}
           </span>
         )}
@@ -129,7 +131,10 @@ export default function IssueDetailContent({
             // Laid out by the script the title is written in, not the interface
             // language, so an Arabic title reads correctly in an English session.
             dir="auto"
-            className="field-sizing-content min-w-0 flex-1 resize-none bg-transparent text-lg leading-snug font-semibold outline-none placeholder:text-muted-foreground"
+            className={cn(
+              'field-sizing-content min-w-0 flex-1 resize-none bg-transparent font-semibold tracking-tight outline-none placeholder:text-muted-foreground',
+              titleSize,
+            )}
             rows={1}
             placeholder={t('titlePlaceholder')}
             defaultValue={issue.title}
@@ -147,7 +152,7 @@ export default function IssueDetailContent({
             }}
           />
         ) : (
-          <h1 dir="auto" className="min-w-0 flex-1 text-lg leading-snug font-semibold">
+          <h1 dir="auto" className={cn('min-w-0 flex-1 font-semibold tracking-tight', titleSize)}>
             {issue.title}
           </h1>
         )}
@@ -155,7 +160,7 @@ export default function IssueDetailContent({
 
       {(canEdit || issue.description.trim() !== '') && (
         <MarkdownEditor
-          className="mt-4"
+          className="mt-3"
           placeholder={tEditor('descriptionPlaceholder')}
           defaultValue={issue.description}
           key={`desc-${issue.updatedAt}-${replacements}`}
@@ -249,7 +254,7 @@ export default function IssueDetailContent({
   );
   // In a sidebar the section follows the actions row, which needs less room above
   // it than the content block it follows in a single column.
-  const sidebarProperties = renderProperties('mt-3 pt-4');
+  const sidebarProperties = renderProperties('mt-0 pt-3');
 
   const actions = <IssueActionsBar project={project} issue={issue} onDeleted={onDeleted} />;
 
@@ -258,7 +263,7 @@ export default function IssueDetailContent({
   const propertiesGrip = (
     <ResizeGrip
       label={tCommon('resizePropertiesPanel')}
-      className="absolute inset-y-0 start-0 -ms-3"
+      className="absolute inset-y-0 start-0 z-10 -ms-1"
       onDrag={(deltaX) =>
         setPropertiesWidth(propertiesWidth + (direction === 'rtl' ? deltaX : -deltaX))
       }
@@ -309,56 +314,57 @@ export default function IssueDetailContent({
   );
 
   if (layout === 'page') {
-    // From xl the issue content sits at the start edge and the actions with
-    // Properties are pinned to the end edge of IssueViewPage's non-scrolling frame (out
-    // of flow), so they never shift the content; the end margin reserves their width so
-    // the two do not overlap.
+    // The column scrolls with the page and is centred in the room the panel leaves.
+    // From xl the actions and Properties are a panel along the end edge: pinned to
+    // the top of the scroll, as tall as the visible area (IssueViewPage's scroll
+    // container is a size container) and scrolling on their own.
     // Below xl there is no room for two columns, so the same two blocks are shown
     // inside the content column instead — the actions above the title, Properties
     // under the description.
     return (
-      <>
-        <div className="max-w-3xl xl:me-(--issue-properties-w)" style={propertiesWidthVar}>
-          <div className="sticky top-0 z-10 -mt-6 bg-background/85 pt-6 pb-3 backdrop-blur-md xl:hidden">
-            {actions}
+      <div className="flex flex-1 items-start" style={propertiesWidthVar}>
+        <div className="min-w-0 flex-1 px-6 pt-6 pb-16 sm:px-10 xl:pt-12">
+          <div className="mx-auto max-w-[760px]">
+            <div className="sticky top-0 z-10 -mt-6 bg-background/85 pt-6 pb-3 backdrop-blur-md xl:hidden">
+              {actions}
+            </div>
+            {heading}
+            <div className="xl:hidden">{renderProperties()}</div>
+            {sections}
+            {activity}
           </div>
-          {heading}
-          <div className="xl:hidden">{renderProperties()}</div>
-          {sections}
-          {activity}
         </div>
-        <aside
-          className="hidden xl:absolute xl:end-6 xl:top-4 xl:flex xl:max-h-[calc(100%-2.5rem)] xl:w-(--issue-properties-w) xl:flex-col"
-          style={propertiesWidthVar}
-        >
+        <aside className="sticky top-0 hidden h-[100cqh] w-(--issue-properties-w) shrink-0 flex-col border-s border-border bg-muted/40 xl:flex">
           {propertiesGrip}
-          <div className="min-h-0 overflow-y-auto">
+          <div className="min-h-0 flex-1 overflow-y-auto p-4">
             {actions}
             {sidebarProperties}
           </div>
         </aside>
-      </>
+      </div>
     );
   }
 
   if (layout === 'split') {
     // Two columns in normal flow: content on the left, Properties as a right
-    // sidebar. Unlike 'page' the sidebar is not viewport-fixed, so it stays inside
-    // a narrower host (the inbox detail pane) without overlapping the content.
+    // sidebar. Unlike 'page' the sidebar is not pinned, so it stays inside a
+    // narrower host (the inbox detail pane) without overlapping the content.
     // The breakpoint is the pane's own width, not the viewport's. The container
     // wraps the flex row rather than being it — an element cannot query itself.
     return (
       <div className="@container">
-        <div className="flex gap-8">
-          <div className="min-w-0 flex-1">
-            <div className="@3xl:hidden">{actions}</div>
-            {heading}
-            <div className="@3xl:hidden">{renderProperties()}</div>
-            {sections}
-            {activity}
+        <div className="flex">
+          <div className="min-w-0 flex-1 @3xl:pe-8">
+            <div className="mx-auto max-w-[760px]">
+              <div className="@3xl:hidden">{actions}</div>
+              {heading}
+              <div className="@3xl:hidden">{renderProperties()}</div>
+              {sections}
+              {activity}
+            </div>
           </div>
           <aside
-            className="relative hidden w-(--issue-properties-w) shrink-0 @3xl:block"
+            className="relative hidden w-(--issue-properties-w) shrink-0 border-s border-border ps-5 @3xl:block"
             style={propertiesWidthVar}
           >
             {propertiesGrip}

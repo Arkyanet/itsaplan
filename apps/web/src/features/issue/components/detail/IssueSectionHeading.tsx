@@ -24,7 +24,7 @@ export default function IssueSectionHeading({
     <button
       type="button"
       className={cn(
-        'flex items-center gap-1 text-xs font-medium tracking-wide text-muted-foreground uppercase hover:text-foreground',
+        'flex items-center gap-1 text-[13px] font-medium text-muted-foreground hover:text-foreground',
         className,
       )}
       onClick={onToggle}
