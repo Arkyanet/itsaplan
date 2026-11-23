@@ -210,18 +210,8 @@ const COMMON: Omit<ViewSettings, 'group' | 'subgroup' | 'properties' | 'sort' | 
 // The properties shown by default per view; the Timeline and Calendar lay issues
 // out by date and show none.
 const DEFAULT_PROPERTIES: Record<WorkItemsView, DisplayProperty[]> = {
-  kanban: [
-    'id',
-    'statusAge',
-    'priority',
-    'type',
-    'dueDate',
-    'labels',
-    'assignee',
-    'created',
-    'updated',
-  ],
-  table: ['priority', 'labels', 'startDate', 'dueDate', 'assignee'],
+  kanban: ['id', 'priority', 'type', 'dueDate', 'labels', 'assignee'],
+  table: ['priority', 'id', 'status', 'labels', 'dueDate', 'assignee'],
   timeline: [],
   calendar: [],
 };
