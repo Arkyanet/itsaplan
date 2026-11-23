@@ -31,7 +31,7 @@ export default function CommentReactions({
     <div
       role="group"
       aria-label={t('reactions')}
-      className={cn('mt-1.5 flex flex-wrap gap-1 ps-8.5', reactions.length === 0 && 'sm:hidden')}
+      className={cn('mt-2 flex flex-wrap gap-1', reactions.length === 0 && 'sm:hidden')}
     >
       {reactions.map((reaction) => {
         const label = t('reactedBy', {

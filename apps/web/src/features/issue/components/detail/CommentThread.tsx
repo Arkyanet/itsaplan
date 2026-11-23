@@ -6,8 +6,8 @@ import { readCommentDraft } from '@/utils/commentDrafts';
 import CommentItem from './CommentItem';
 import CommentComposer, { type ComposerContext } from './CommentComposer';
 
-// A comment and everything written under it: each reply a step further in than what
-// it answers, and the reply box opens at the bottom.
+// A comment and everything written under it, on one card: each reply a step further
+// in than what it answers, and the reply box opens at the bottom.
 
 // How deep a reply keeps stepping in. Past it the thread still nests, but on the same
 // indent, so a long exchange does not squeeze the text off the screen.
@@ -61,7 +61,8 @@ export default function CommentThread({
   }, [composer, root, repliesByParent]);
 
   return (
-    <li className="flex flex-col gap-2 py-1.5">
+    // Positioned, so the card covers the feed's vertical line.
+    <li className="relative my-1.5 divide-y divide-border/70 rounded-lg border border-border bg-card">
       {rows.map((row) => (
         <div key={row.item.id} className={indentClass(row.depth)}>
           <CommentItem
@@ -76,15 +77,17 @@ export default function CommentThread({
         </div>
       ))}
       {replyTo && composer && (
-        <div className={indentClass(replyTo.depth + 1)}>
-          <CommentComposer
-            key={replyTo.item.id}
-            {...composer}
-            replyToId={replyTo.item.id}
-            replyToName={replyTo.item.actorName}
-            restored={replyTo.restored}
-            onClose={() => setReplyTo(null)}
-          />
+        <div className="px-3 py-2.5">
+          <div className={indentClass(replyTo.depth + 1)}>
+            <CommentComposer
+              key={replyTo.item.id}
+              {...composer}
+              replyToId={replyTo.item.id}
+              replyToName={replyTo.item.actorName}
+              restored={replyTo.restored}
+              onClose={() => setReplyTo(null)}
+            />
+          </div>
         </div>
       )}
     </li>
@@ -105,5 +108,5 @@ function threadRows(root: FeedItem, repliesByParent: Map<number, FeedItem[]>): R
 // the source.
 function indentClass(depth: number): string {
   const step = Math.min(depth, MAX_INDENT_DEPTH);
-  return ['', 'ps-8.5', 'ps-12.5', 'ps-16.5'][step];
+  return ['', 'ps-7', 'ps-11', 'ps-15'][step];
 }

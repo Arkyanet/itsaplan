@@ -45,12 +45,12 @@ export default function IssueViewPage() {
 
   if (!project) return null;
 
-  // The Properties sidebar is positioned against this non-scrolling frame, not the
-  // viewport, so a notice strip above the page moves it down with the page.
+  // A size container, so the Properties panel can take the height of the visible area
+  // (100cqh) while it stays pinned at the top of the scroll.
   return (
     <div className="relative flex min-h-0 flex-1 flex-col">
-      <div {...scrollRestorationProps} className="flex-1 overflow-y-auto">
-        <div className="flex flex-col px-8 py-6 xl:px-12">
+      <div {...scrollRestorationProps} className="[container-type:size] flex-1 overflow-y-auto">
+        <div className="flex min-h-full flex-col">
           {issueQuery.data && !moved ? (
             <IssueDetailContent
               project={project}
@@ -60,9 +60,9 @@ export default function IssueViewPage() {
               commentId={commentId}
             />
           ) : issueQuery.isLoading || (moved && (!projects || movedTo)) ? (
-            <IssueDetailSkeleton />
+            <IssueDetailSkeleton layout="page" />
           ) : (
-            <div className="py-6 text-sm text-muted-foreground">{t('notFound')}</div>
+            <div className="px-8 py-12 text-sm text-muted-foreground">{t('notFound')}</div>
           )}
         </div>
       </div>

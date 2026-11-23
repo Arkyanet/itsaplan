@@ -32,15 +32,15 @@ export default function ActivityLine({
   const { line, popover } = describeActivity(item);
   const actor = item.actorName ?? t('system');
   return (
-    <li className="flex items-start gap-2.5 py-1 text-[13px]">
+    <li className="flex items-start gap-2.5 py-1 text-[13px] leading-[18px]">
       {nested ? (
-        <span className="w-6 shrink-0" />
+        <span className="w-4.5 shrink-0" />
       ) : (
-        <span className="relative flex size-6 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
-          <Icon className="size-3.5" />
+        <span className="relative flex size-4.5 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground">
+          <Icon className="size-3" />
         </span>
       )}
-      <span className="min-w-0 flex-1 pt-0.5 text-muted-foreground">
+      <span className="min-w-0 flex-1 text-muted-foreground">
         <span className="font-medium text-foreground/85">{actor}</span> {line}
         {popover && (
           <Popover>
@@ -60,7 +60,7 @@ export default function ActivityLine({
         {trailing}
       </span>
       <span
-        className="shrink-0 pt-0.5 text-xs text-muted-foreground/80 tabular-nums"
+        className="shrink-0 text-xs text-muted-foreground/80 tabular-nums"
         title={formatDateTime(item.createdAt)}
       >
         {relativeTime(item.createdAt)}

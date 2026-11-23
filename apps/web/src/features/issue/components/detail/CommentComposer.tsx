@@ -118,78 +118,78 @@ export default function CommentComposer({
   if (isEdit) submitLabel = tCommon('save');
   if (posting) submitLabel = isEdit ? tCommon('saving') : t('posting');
 
-  // The reply and edit boxes open inside a thread, so they render compact and
-  // without the bottom gap the standalone composer keeps.
+  // The reply and edit boxes open inside a thread card, which already shows who
+  // wrote what, so they render compact and without the avatar.
   const compact = isReply || isEdit;
   // The standalone box stays one line until it is used, so it weighs no more than
   // the feed under it; it grows its footer once focused or holding a draft.
   const expanded = compact || focused || body.length > 0;
 
   return (
-    <div className={cn(!compact && 'mb-5')}>
-      <div className="flex gap-3">
-        <Avatar
-          name={authorName}
-          image={authorImage}
-          className={cn('shrink-0 text-[11px]', compact ? 'mt-0.5 size-6' : 'mt-1.5 size-7')}
-          title={t('commentAs', { name: authorName })}
-        />
-        <div className="relative min-w-0 flex-1">
-          <div className="overflow-hidden rounded-lg border bg-muted/20 shadow-xs transition-[border-color,box-shadow] focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/30">
-            <Textarea
-              ref={mention.ref}
-              // `auto` once there is something to read, so a comment keeps the
-              // script it was typed in. An empty box has nothing to read from, and
-              // would fall back to left-to-right and strand the placeholder.
-              dir={body ? 'auto' : undefined}
-              value={body}
-              onChange={mention.onChange}
-              onFocus={() => setFocused(true)}
-              onBlur={() => {
-                mention.close();
-                setFocused(false);
-              }}
-              placeholder={placeholder}
-              className={cn(
-                'resize-none rounded-none border-0 bg-transparent px-3 py-2.5 shadow-none focus-visible:ring-0',
-                !expanded ? 'min-h-10' : compact ? 'min-h-[52px]' : 'min-h-[64px]',
-              )}
-              onKeyDown={onKeyDown}
+    <div className="relative">
+      <div className="overflow-hidden rounded-lg border border-border bg-card transition-[border-color,box-shadow] focus-within:border-ring focus-within:ring-[3px] focus-within:ring-ring/30">
+        <div className="flex">
+          {!compact && (
+            <Avatar
+              name={authorName}
+              image={authorImage}
+              className="ms-3 mt-2.5 size-5 shrink-0 text-[9px]"
+              title={t('commentAs', { name: authorName })}
             />
-            {expanded && (
-              <div className="flex items-center justify-between gap-2 border-t px-2.5 py-2">
-                {isEdit ? (
-                  <span />
-                ) : (
-                  <span className="text-[11px] text-muted-foreground/70">
-                    <kbd className="rounded bg-muted px-1.5 py-0.5 font-sans text-[10px] font-medium">
-                      {cmdKey} ↵
-                    </kbd>
-                    <span className="ml-1.5">{t('toSend')}</span>
-                  </span>
-                )}
-                <div className="flex items-center gap-1.5">
-                  {onClose && (
-                    <Button size="sm" variant="ghost" onClick={cancel}>
-                      {t('cancel')}
-                    </Button>
-                  )}
-                  <Button size="sm" disabled={!body.trim() || posting} onClick={() => void post()}>
-                    {submitLabel}
-                  </Button>
-                </div>
-              </div>
+          )}
+          <Textarea
+            ref={mention.ref}
+            // `auto` once there is something to read, so a comment keeps the
+            // script it was typed in. An empty box has nothing to read from, and
+            // would fall back to left-to-right and strand the placeholder.
+            dir={body ? 'auto' : undefined}
+            value={body}
+            onChange={mention.onChange}
+            onFocus={() => setFocused(true)}
+            onBlur={() => {
+              mention.close();
+              setFocused(false);
+            }}
+            placeholder={placeholder}
+            className={cn(
+              'min-w-0 flex-1 resize-none rounded-none border-0 bg-transparent px-3 py-2.5 shadow-none focus-visible:ring-0',
+              !expanded ? 'min-h-10' : compact ? 'min-h-[52px]' : 'min-h-[64px]',
             )}
-          </div>
-
-          <MentionMenu
-            ref={mention.menuRef}
-            items={mention.matches}
-            onPick={mention.pick}
-            className="absolute inset-x-0 top-full z-20 mt-1 w-auto"
+            onKeyDown={onKeyDown}
           />
         </div>
+        {expanded && (
+          <div className="flex items-center justify-between gap-2 border-t px-2.5 py-2">
+            {isEdit ? (
+              <span />
+            ) : (
+              <span className="text-[11px] text-muted-foreground/70">
+                <kbd className="rounded bg-muted px-1.5 py-0.5 font-sans text-[10px] font-medium">
+                  {cmdKey} ↵
+                </kbd>
+                <span className="ms-1.5">{t('toSend')}</span>
+              </span>
+            )}
+            <div className="flex items-center gap-1.5">
+              {onClose && (
+                <Button size="sm" variant="ghost" onClick={cancel}>
+                  {t('cancel')}
+                </Button>
+              )}
+              <Button size="sm" disabled={!body.trim() || posting} onClick={() => void post()}>
+                {submitLabel}
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
+
+      <MentionMenu
+        ref={mention.menuRef}
+        items={mention.matches}
+        onPick={mention.pick}
+        className="absolute inset-x-0 top-full z-20 mt-1 w-auto"
+      />
     </div>
   );
 }

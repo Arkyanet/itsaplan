@@ -19,7 +19,7 @@ import { reactedEmojis, type ReactionViewer } from '../../utils/reactions';
 import { writeClipboardText } from '../../utils/clipboard';
 import { useTranslations } from 'next-intl';
 
-// One comment inside a thread: a line of author, age and its actions over the
+// One comment inside a thread card: a line of author, age and its actions over the
 // rendered markdown body. A feed entry stores the author's name, not their picture,
 // so the uploaded avatar comes in as a prop (null falls back to the initials circle).
 // The indent of a reply belongs to CommentThread.
@@ -83,16 +83,19 @@ export default function CommentItem({
 
   return (
     // The id is the scroll target of the last-comment bubble and of a comment link.
-    <div id={`feed-item-${item.id}`} className="group/comment relative scroll-mt-20">
+    <div
+      id={`feed-item-${item.id}`}
+      className="group/comment relative scroll-mt-20 px-3 pt-2.5 pb-3"
+    >
       {link?.highlightedId === item.id && (
         <span
           aria-hidden
-          className="pointer-events-none absolute -inset-x-2 -inset-y-1.5 animate-out rounded-lg bg-primary/10 delay-1000 duration-1000 fill-mode-forwards fade-out motion-reduce:animate-none"
+          className="pointer-events-none absolute inset-0 animate-out rounded-lg bg-brand-soft delay-1000 duration-1000 fill-mode-forwards fade-out motion-reduce:animate-none"
         />
       )}
-      <div className="flex items-center gap-2.5">
-        <Avatar name={author} image={image} className="size-6 shrink-0 text-[10px]" />
-        <span className="truncate text-[13px] font-semibold">{author}</span>
+      <div className="flex min-h-6 items-center gap-2">
+        <Avatar name={author} image={image} className="size-5 shrink-0 text-[9px]" />
+        <span className="truncate text-[13px] font-medium">{author}</span>
         <span className="shrink-0 text-xs text-muted-foreground">
           · {relativeTime(item.createdAt)}
           {item.editedAt && ` · ${t('edited')}`}
@@ -154,7 +157,7 @@ export default function CommentItem({
         )}
       </div>
       {editing && composer ? (
-        <div className="mt-1 ps-8.5">
+        <div className="mt-1.5">
           <CommentComposer
             {...composer}
             commentId={item.id}
@@ -164,16 +167,14 @@ export default function CommentItem({
           />
         </div>
       ) : (
-        <div className="mt-1 ps-8.5">
-          <div className="w-fit max-w-full rounded-xl rounded-ss-sm bg-muted/60 px-3 py-2">
-            <MarkdownEditor
-              // The editor reads its content once, at mount: an edit has to remount it.
-              key={item.body ?? ''}
-              className="text-sm text-foreground/90 [&_a.issue-ref]:mx-1 [&_a.issue-ref]:text-[0.9em]"
-              defaultValue={item.body ?? ''}
-              editable={false}
-            />
-          </div>
+        <div className="mt-1.5">
+          <MarkdownEditor
+            // The editor reads its content once, at mount: an edit has to remount it.
+            key={item.body ?? ''}
+            className="text-sm text-foreground/90 [&_a.issue-ref]:mx-1 [&_a.issue-ref]:text-[0.9em]"
+            defaultValue={item.body ?? ''}
+            editable={false}
+          />
         </div>
       )}
       <CommentReactions reactions={reactions} viewerId={viewer?.id} onToggle={toggle} />

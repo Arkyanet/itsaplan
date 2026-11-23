@@ -11,6 +11,7 @@ export function Pill({
   return (
     <button
       type="button"
+      data-slot="pill"
       className={`flex h-7 max-w-full min-w-0 items-center gap-1.5 rounded-full border px-2.5 text-sm transition-colors hover:bg-accent [&_svg:not([class*='size-'])]:size-3.5 [&>svg]:shrink-0 ${
         active ? 'text-foreground' : 'text-muted-foreground'
       }`}
