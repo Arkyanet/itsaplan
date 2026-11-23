@@ -13,6 +13,7 @@ const ChartBlock = dynamic(() => import('./chart/ChartBlock'));
 // The import review card pulls its draft over HTTP, so only answers carrying one
 // load it.
 const AgentChatImportCard = dynamic(() => import('./agent-chat/AgentChatImportCard'));
+const ChoiceCard = dynamic(() => import('./choice/ChoiceCard'));
 
 // Renders markdown text as formatted HTML with the shared `.md-content` styles
 // (headings, lists, code, blockquote, links), without the virtualized-table image
@@ -38,6 +39,9 @@ export default function Markdown({
       {segments.map((segment, index) => {
         if (segment.kind === 'chart') {
           return <ChartBlock key={index} spec={segment.spec} source={segment.source} />;
+        }
+        if (segment.kind === 'choice') {
+          return <ChoiceCard key={index} spec={segment.spec} />;
         }
         if (segment.kind === 'issue-import') {
           return <AgentChatImportCard key={index} importId={segment.importId} />;

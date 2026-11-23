@@ -1,6 +1,7 @@
 import { marked } from 'marked';
 import DOMPurify, { type UponSanitizeAttributeHookEvent } from 'isomorphic-dompurify';
 import { parseChartSpec, type ChartSpec } from '@/utils/chartSpec';
+import { CHOICE_TAGS, parseChoiceSpec, type ChoiceSpec } from '@/utils/choiceSpec';
 import { mediaUrl } from '@/lib/api/core/media';
 import { allowedImageStyle } from '@repo/editor';
 
@@ -85,7 +86,9 @@ export type MarkdownSegment =
   // every streamed token, so it is what tells an unchanged chart from a new one.
   | { kind: 'chart'; spec: ChartSpec; source: string }
   // An import review card the user confirms or discards (see AgentChatImportCard).
-  | { kind: 'issue-import'; importId: string; source: string };
+  | { kind: 'issue-import'; importId: string; source: string }
+  // A multiple-choice question the reader answers from the card (see choiceSpec).
+  | { kind: 'choice'; spec: ChoiceSpec; source: string };
 
 const CHART_TAG = 'chart';
 const IMPORT_TAG = 'issue-import';
@@ -163,7 +166,11 @@ export function markdownSegments(value: string, options?: HtmlOptions): Markdown
       if (end === lines.length) {
         // Only a fence the model tagged holds a place while it streams in: an untagged
         // one is as likely to be the code block it looks like.
-        if (fence.tag !== CHART_TAG && fence.tag !== IMPORT_TAG) {
+        if (
+          fence.tag !== CHART_TAG &&
+          fence.tag !== IMPORT_TAG &&
+          !CHOICE_TAGS.includes(fence.tag)
+        ) {
           buffer.push(...lines.slice(i));
           break;
         }
@@ -173,9 +180,13 @@ export function markdownSegments(value: string, options?: HtmlOptions): Markdown
       }
       source = [...(fence.body ? [fence.body] : []), ...lines.slice(i + 1, end)].join('\n');
     }
-    const spec = parseChartSpec(source);
-    const importId = spec ? null : parseImportRef(source);
-    if (spec) {
+    const choice = CHOICE_TAGS.includes(fence.tag) ? parseChoiceSpec(source) : null;
+    const spec = choice ? null : parseChartSpec(source);
+    const importId = choice || spec ? null : parseImportRef(source);
+    if (choice) {
+      flush();
+      segments.push({ kind: 'choice', spec: choice, source });
+    } else if (spec) {
       flush();
       segments.push({ kind: 'chart', spec, source });
     } else if (importId) {

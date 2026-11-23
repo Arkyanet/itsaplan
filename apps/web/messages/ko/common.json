@@ -313,5 +313,9 @@
     "range": "전체 {total}개 중 {first}-{last}"
   },
   "upgradeToPro": "Pro로 업그레이드",
-  "signingOut": "로그아웃하는 중…"
+  "signingOut": "로그아웃하는 중…",
+  "choiceAnswer": "Answer to \"{question}\": {answer}",
+  "choiceOther": "Other answer…",
+  "choiceSend": "Send",
+  "choiceSent": "Answer sent."
 }

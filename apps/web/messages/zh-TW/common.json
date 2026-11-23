@@ -313,5 +313,9 @@
     "range": "第 {first}-{last} 項，共 {total} 項"
   },
   "upgradeToPro": "升級至 Pro",
-  "signingOut": "正在登出…"
+  "signingOut": "正在登出…",
+  "choiceAnswer": "Answer to \"{question}\": {answer}",
+  "choiceOther": "Other answer…",
+  "choiceSend": "Send",
+  "choiceSent": "Answer sent."
 }

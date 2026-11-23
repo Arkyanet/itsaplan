@@ -313,5 +313,9 @@
     "range": "{first}-{last} з {total}"
   },
   "upgradeToPro": "Перейти на Pro",
-  "signingOut": "Вихід…"
+  "signingOut": "Вихід…",
+  "choiceAnswer": "Answer to \"{question}\": {answer}",
+  "choiceOther": "Other answer…",
+  "choiceSend": "Send",
+  "choiceSent": "Answer sent."
 }

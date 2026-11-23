@@ -313,5 +313,9 @@
     "range": "{total} kayıttan {first}-{last} arası"
   },
   "upgradeToPro": "Pro'ya geçin",
-  "signingOut": "Oturum kapatılıyor…"
+  "signingOut": "Oturum kapatılıyor…",
+  "choiceAnswer": "Answer to \"{question}\": {answer}",
+  "choiceOther": "Other answer…",
+  "choiceSend": "Send",
+  "choiceSent": "Answer sent."
 }

@@ -313,5 +313,9 @@
     "range": "{first}-{last} of {total}"
   },
   "upgradeToPro": "Upgrade to Pro",
-  "signingOut": "Signing out…"
+  "signingOut": "Signing out…",
+  "choiceAnswer": "Answer to \"{question}\": {answer}",
+  "choiceOther": "Other answer…",
+  "choiceSend": "Send",
+  "choiceSent": "Answer sent."
 }

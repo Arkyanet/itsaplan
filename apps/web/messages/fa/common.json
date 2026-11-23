@@ -313,5 +313,9 @@
     "range": "{first}-{last} از {total}"
   },
   "upgradeToPro": "ارتقا به Pro",
-  "signingOut": "در حال خروج…"
+  "signingOut": "در حال خروج…",
+  "choiceAnswer": "Answer to \"{question}\": {answer}",
+  "choiceOther": "Other answer…",
+  "choiceSend": "Send",
+  "choiceSent": "Answer sent."
 }

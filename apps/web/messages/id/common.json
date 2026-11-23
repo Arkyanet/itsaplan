@@ -313,5 +313,9 @@
     "range": "{first}-{last} dari {total}"
   },
   "upgradeToPro": "Upgrade ke Pro",
-  "signingOut": "Sedang keluar…"
+  "signingOut": "Sedang keluar…",
+  "choiceAnswer": "Answer to \"{question}\": {answer}",
+  "choiceOther": "Other answer…",
+  "choiceSend": "Send",
+  "choiceSent": "Answer sent."
 }

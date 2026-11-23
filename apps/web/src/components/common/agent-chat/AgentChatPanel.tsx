@@ -23,6 +23,7 @@ import {
   InputGroupTextarea,
 } from '@/components/ui/input-group';
 import { useTranslations } from 'next-intl';
+import { ChoiceAnswerProvider } from '@/context/choiceAnswerContext';
 
 const MAX_ATTACHMENTS = 10;
 
@@ -149,16 +150,18 @@ export function AgentChatPanel({
               </EmptyHeader>
             </Empty>
           ) : (
-            <AgentChatTranscript
-              messages={messages}
-              status={status}
-              activeTool={activeTool}
-              pending={pending}
-              onRemovePending={onRemovePending}
-              hasEarlierMessages={hasEarlierMessages}
-              isLoadingEarlier={isLoadingEarlier}
-              onLoadEarlier={onLoadEarlier}
-            />
+            <ChoiceAnswerProvider onAnswer={chatDisabled ? null : onSend}>
+              <AgentChatTranscript
+                messages={messages}
+                status={status}
+                activeTool={activeTool}
+                pending={pending}
+                onRemovePending={onRemovePending}
+                hasEarlierMessages={hasEarlierMessages}
+                isLoadingEarlier={isLoadingEarlier}
+                onLoadEarlier={onLoadEarlier}
+              />
+            </ChoiceAnswerProvider>
           )}
         </div>
 

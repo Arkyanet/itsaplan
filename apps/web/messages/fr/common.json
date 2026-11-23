@@ -313,5 +313,9 @@
     "range": "{first}-{last} sur {total}"
   },
   "upgradeToPro": "Passer à Pro",
-  "signingOut": "Déconnexion…"
+  "signingOut": "Déconnexion…",
+  "choiceAnswer": "Réponse à « {question} » : {answer}",
+  "choiceOther": "Autre réponse…",
+  "choiceSend": "Envoyer",
+  "choiceSent": "Réponse envoyée."
 }
