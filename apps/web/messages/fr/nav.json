@@ -23,8 +23,8 @@
   "apiDocsLoadFailedHint": "Rechargez la page pour réessayer.",
   "api": "API",
   "mcpServer": "Serveur MCP",
-  "godMode": "God mode",
-  "godModeSection": "God mode : {section}",
+  "godMode": "Administration de l'instance",
+  "godModeSection": "Administration : {section}",
   "instanceSettings": "Paramètres de l'instance",
   "backToApp": "Retour à l'application",
   "integrations": "Intégrations",
@@ -44,7 +44,7 @@
     "workflow": "Flux de travail",
     "automation": "Automatisation"
   },
-  "godModeOwnerOnly": "Le God mode est réservé au propriétaire de l'instance.",
+  "godModeOwnerOnly": "L'administration de l'instance est réservée à son propriétaire.",
   "project": "Projet",
   "projectPicker": {
     "sortName": "Project name",
