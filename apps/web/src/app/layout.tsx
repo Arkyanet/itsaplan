@@ -17,6 +17,7 @@ import { APP_NAME } from '@/utils/app';
 import { COLOR_THEME_COOKIE, parseColorThemeCookie } from '@/utils/colorThemes';
 import { customThemeVars } from '@/utils/customTheme';
 import './globals.css';
+import '@/arkya/theme.css';
 
 // The start goes first: the release notes and the tour are about work the person can
 // already see.

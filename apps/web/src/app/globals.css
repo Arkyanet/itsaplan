@@ -32,6 +32,9 @@
   --color-overdue: var(--overdue);
   --color-warning: var(--warning);
   --color-pro: var(--pro);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-soft: var(--brand-soft);
   --color-pro-foreground: var(--pro-foreground);
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);

@@ -1,0 +1,109 @@
+/* Palette par défaut aux couleurs des applications Arkya (back-office, espace client) :
+   neutres zinc, cartes blanches posées sur un cadre gris, bordures fines, très peu
+   d'ombre, orange Arkya pour le focus et les accents. Chargé après globals.css, il ne
+   remplace que la palette « Par défaut » : les autres palettes restent celles d'origine. */
+
+:root:not([data-palette]) {
+  --background: #fafafa;
+  --foreground: #18181b;
+  --card: #ffffff;
+  --card-foreground: #18181b;
+  --popover: #ffffff;
+  --popover-foreground: #18181b;
+  --primary: #18181b;
+  --primary-foreground: #fafafa;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
+  --destructive: #dc2626;
+  --destructive-text: #dc2626;
+  --warning: #b45309;
+  --border: #e7e7ea;
+  --input: #d9d9de;
+  --ring: rgb(234 88 12 / 0.45);
+  --sidebar: #f4f4f5;
+  --sidebar-foreground: #18181b;
+  --sidebar-primary: #18181b;
+  --sidebar-primary-foreground: #fafafa;
+  --sidebar-accent: #e9e9ec;
+  --sidebar-accent-foreground: #18181b;
+  --sidebar-border: #e7e7ea;
+  --sidebar-ring: rgb(234 88 12 / 0.45);
+  --brand: #ea580c;
+  --brand-foreground: #c2410c;
+  --brand-soft: rgb(234 88 12 / 0.08);
+  --kanban-column: #f4f4f5;
+  --kanban-column-raised: #efeff1;
+  --kanban-card: #ffffff;
+  --kanban-card-hover: #fcfcfc;
+  --kanban-card-selected: #fff4ed;
+  --row-blocked: #fef2f2;
+  --row-blocked-hover: #fde8e8;
+  --overlay-shadow: 0 8px 24px -12px rgb(24 24 27 / 0.14), 0 2px 6px -2px rgb(24 24 27 / 0.06);
+  --pinned-column-shadow: 0 0 12px 0 rgb(24 24 27 / 0.08);
+  --side-panel-shadow: 0 0 20px 0 rgb(24 24 27 / 0.08);
+  --modal-shadow: 0 24px 48px -16px rgb(24 24 27 / 0.22), 0 8px 16px -8px rgb(24 24 27 / 0.08);
+}
+
+:root:not([data-palette]).dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  --card: #161616;
+  --card-foreground: #ededed;
+  --popover: #161616;
+  --popover-foreground: #ededed;
+  --primary: #ededed;
+  --primary-foreground: #111111;
+  --secondary: #1c1c1c;
+  --secondary-foreground: #ededed;
+  --muted: #1c1c1c;
+  --muted-foreground: #a1a1a1;
+  --accent: #1c1c1c;
+  --accent-foreground: #ededed;
+  --destructive: #f87171;
+  --destructive-text: #f87171;
+  --warning: #fbbf24;
+  --border: #222222;
+  --input: #2e2e2e;
+  --ring: rgb(255 90 31 / 0.5);
+  --sidebar: #111111;
+  --sidebar-foreground: #ededed;
+  --sidebar-primary: #ededed;
+  --sidebar-primary-foreground: #111111;
+  --sidebar-accent: #1c1c1c;
+  --sidebar-accent-foreground: #ededed;
+  --sidebar-border: #222222;
+  --sidebar-ring: rgb(255 90 31 / 0.5);
+  --brand: #ff5a1f;
+  --brand-foreground: #ff7a45;
+  --brand-soft: rgb(255 90 31 / 0.12);
+  --kanban-column: #111111;
+  --kanban-column-raised: #131313;
+  --kanban-card: #161616;
+  --kanban-card-hover: #1c1c1c;
+  --kanban-card-selected: #2a1a12;
+  --row-blocked: rgb(239 68 68 / 0.08);
+  --row-blocked-hover: rgb(239 68 68 / 0.12);
+  --overlay-shadow: 0 12px 32px -12px rgb(0 0 0 / 0.6);
+  --pinned-column-shadow: 0 0 12px 0 rgb(0 0 0 / 0.5);
+  --side-panel-shadow: 0 0 24px 0 rgb(0 0 0 / 0.55);
+  --modal-shadow: 0 32px 64px -20px rgb(0 0 0 / 0.75);
+}
+
+/* Les autres palettes n'ont pas d'orange : l'accent reste leur couleur principale. */
+:root[data-palette] {
+  --brand: var(--primary);
+  --brand-foreground: var(--primary);
+  --brand-soft: color-mix(in oklab, var(--primary) 10%, transparent);
+}
+
+body {
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+::selection {
+  background: var(--brand-soft);
+}
