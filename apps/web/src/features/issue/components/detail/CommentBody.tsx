@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import type { FeedItem } from '@/lib/api/endpoints/activity';
-import ChoiceCard from '@/components/common/choice/ChoiceCard';
+import ChoiceGroup from '@/components/common/choice/ChoiceGroup';
 import MarkdownEditor from '@/components/common/editor/MarkdownEditor';
 import { ChoiceAnswerProvider } from '@/context/choiceAnswerContext';
 import { useProjectQuery } from '@/services/projects.service';
@@ -51,9 +51,7 @@ export default function CommentBody({
       )}
       {choices.length > 0 && (
         <ChoiceAnswerProvider onAnswer={onAnswer}>
-          {choices.map((spec, index) => (
-            <ChoiceCard key={index} spec={spec} />
-          ))}
+          <ChoiceGroup specs={choices} />
         </ChoiceAnswerProvider>
       )}
     </>

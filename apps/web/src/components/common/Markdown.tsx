@@ -13,7 +13,7 @@ const ChartBlock = dynamic(() => import('./chart/ChartBlock'));
 // The import review card pulls its draft over HTTP, so only answers carrying one
 // load it.
 const AgentChatImportCard = dynamic(() => import('./agent-chat/AgentChatImportCard'));
-const ChoiceCard = dynamic(() => import('./choice/ChoiceCard'));
+const ChoiceGroup = dynamic(() => import('./choice/ChoiceGroup'));
 
 // Renders markdown text as formatted HTML with the shared `.md-content` styles
 // (headings, lists, code, blockquote, links), without the virtualized-table image
@@ -28,6 +28,11 @@ export default function Markdown({
   complete?: boolean;
 }) {
   const segments = useMemo(() => markdownSegments(children, { newTabLinks: true }), [children]);
+  const choices = useMemo(
+    () => segments.flatMap((segment) => (segment.kind === 'choice' ? [segment.spec] : [])),
+    [segments],
+  );
+  const firstChoice = segments.findIndex((segment) => segment.kind === 'choice');
   const bareUrls = useMemo(
     () => (complete ? bareMarkdownUrls(children) : new Set<string>()),
     [children, complete],
@@ -40,8 +45,10 @@ export default function Markdown({
         if (segment.kind === 'chart') {
           return <ChartBlock key={index} spec={segment.spec} source={segment.source} />;
         }
+        // All the questions of the answer are asked together, where the first one sits.
         if (segment.kind === 'choice') {
-          return <ChoiceCard key={index} spec={segment.spec} />;
+          if (index !== firstChoice) return null;
+          return <ChoiceGroup key={`choice-${choices.length}`} specs={choices} />;
         }
         if (segment.kind === 'issue-import') {
           return <AgentChatImportCard key={index} importId={segment.importId} />;

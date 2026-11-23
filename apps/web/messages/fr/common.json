@@ -317,5 +317,12 @@
   "choiceAnswer": "Réponse à « {question} » : {answer}",
   "choiceOther": "Autre réponse…",
   "choiceSend": "Envoyer",
-  "choiceSent": "Réponse envoyée."
+  "choiceSent": "Réponses envoyées.",
+  "choiceStep": "Question {current} sur {total}",
+  "choicePrevious": "Précédent",
+  "choiceNext": "Suivant",
+  "choiceToReview": "Récapitulatif",
+  "choiceReview": "Récapitulatif de tes réponses",
+  "choiceSendAll": "Envoyer les réponses",
+  "choiceUnanswered": "Sans réponse"
 }
