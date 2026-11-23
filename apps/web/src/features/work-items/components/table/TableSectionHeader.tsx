@@ -39,20 +39,27 @@ export function TableSectionHeader({
       id={dropId}
       disabled={disabled}
       onDrop={onDrop}
-      className="flex items-center justify-between bg-muted/40 px-4 py-1.5"
+      className="group/section flex h-9 items-center justify-between bg-muted/60 px-4"
     >
       <button
         type="button"
         {...triggerProps}
         onClick={onToggle}
-        className="flex items-center gap-2 text-sm font-medium text-foreground"
+        className="flex items-center gap-2 text-[13px] font-medium text-foreground"
       >
         <Chevron ref={ref} size={14} className="text-muted-foreground" />
         <GroupDot group={group} />
         {group.name}
         <span className="text-xs font-normal text-muted-foreground">{count}</span>
       </button>
-      {canAdd && <HeaderIconButton icon={PlusIcon} label={t('newIssue')} onClick={onAddIssue} />}
+      {canAdd && (
+        <HeaderIconButton
+          icon={PlusIcon}
+          label={t('newIssue')}
+          onClick={onAddIssue}
+          className="opacity-0 group-focus-within/section:opacity-100 group-hover/section:opacity-100 pointer-coarse:opacity-100"
+        />
+      )}
     </TableDropZone>
   );
 }

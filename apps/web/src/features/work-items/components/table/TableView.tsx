@@ -71,11 +71,14 @@ export default function TableView({
   const subGroups = subgrouped ? buildGroups(project, settings.subgroup, groupLabels, filters) : [];
   const maps = buildMaps(project);
 
+  const showPriority = settings.properties.includes('priority');
+  const showStatus = settings.properties.includes('status');
   const { columns, gridTemplate, minWidth, alignTop } = resolveColumns(
-    settings.properties,
+    settings.properties.filter((p) => p !== 'priority' && p !== 'status'),
     customFields,
     widths,
   );
+  const idWidth = project.issues.reduce((max, i) => Math.max(max, i.identifier.length), 0);
 
   const items = buildTableItems({
     groups,
@@ -90,7 +93,7 @@ export default function TableView({
   const virtualizer = useVirtualizer({
     count: items.length,
     getScrollElement: () => scrollRef.current,
-    estimateSize: () => 40,
+    estimateSize: () => 36,
     overscan: 12,
     // A scroll step renders in a normal React update, not in flushSync inside the
     // scroll event, which blocks every scroll event on a slow CPU.
@@ -143,6 +146,9 @@ export default function TableView({
             orderedColumns={columns}
             maps={maps}
             showId={settings.properties.includes('id')}
+            showPriority={showPriority}
+            showStatus={showStatus}
+            idWidth={idWidth}
             alignTop={alignTop}
             indented={subgrouped}
             gridTemplate={gridTemplate}

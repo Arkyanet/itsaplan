@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, type CSSProperties } from 'react';
 import { ChevronRight } from 'lucide-react';
 import type { Issue } from '@/lib/api/endpoints/issues';
 import { noDragProps } from '@/lib/dnd';
@@ -14,10 +14,12 @@ import { useAncestors } from '../../context/useSubtasks';
 export function IssueIdentifier({
   issue,
   className,
+  style,
   onOpenAncestor,
 }: {
   issue: Issue;
   className?: string;
+  style?: CSSProperties;
   onOpenAncestor?: (id: number) => void;
 }) {
   const ancestors = useAncestors(issue.parentId);
@@ -28,7 +30,7 @@ export function IssueIdentifier({
   );
 
   return (
-    <span className={cn('flex shrink-0 items-center gap-0.5', className)}>
+    <span className={cn('flex shrink-0 items-center gap-0.5', className)} style={style}>
       {shown.map((ancestor, index) => (
         <Fragment key={ancestor.id}>
           <Tooltip>
